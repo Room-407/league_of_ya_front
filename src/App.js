@@ -1,27 +1,33 @@
 import './App.css';
 import React, { useEffect, useState } from 'react';
-import getBackgroundImage from "./utils/getBackground"
+import useBackground from './hooks/useBackground';
+import useGame from './hooks/useGame';
+import Input from './components/input';
 
 const App = () => {
-  useEffect(() => {
-    const backgroundImage = getBackgroundImage();
-    document.body.style.backgroundImage = `url('${backgroundImage}'`;
-  }, [])
+  const setBackground = useBackground();
+  const [hasText, setHasText] = useState(false);
+  const [input, setInput] = useState('');
+  const [championList, setChampionList] = useState([]);
+  const { answer, error, count, getSimilarChampionList, tryAnswer } = useGame();
 
-  const [isShow, setIsShow] = useState(true);
+  useEffect(() => {
+    if (input === '')
+      setHasText(true);
+  }, [input]);
+
+  const changeInputHandler = async ({ target: { value } }) => {
+    setInput(value);
+    setHasText(true);
+  }
+
+  // useEffect(() => {
+  //   setBackground(); 
+  // }, [])
 
   return (
     <div className="App">
-      <div className='inputBox'>
-        <input type="text" />
-      </div>
-      <div className='wrapper'>
-        <div className='item' id='sex'></div>
-        <div className='item' id='from'></div>
-        <div className='item' id='mainPosition'></div>
-        <div className='item' id='subPosition'></div>
-        <div className='item' id='role'></div>
-      </div>
+      <Input count={count} handler={changeInputHandler} list={championList} />
     </div>
   );
 }
